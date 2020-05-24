@@ -1,0 +1,3 @@
+¿Es la configuración de capas-neuronas por capa mínima que logra separar los 
+estímulos en internos y externos?
+
