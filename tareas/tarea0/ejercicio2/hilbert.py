@@ -31,5 +31,5 @@ def imprime():
     plt.title("Número de condición")
     plt.show()
         
-# Código para ejecutar el programa.
-imprime()
+if __name__ == "__main__":
+    imprime()
