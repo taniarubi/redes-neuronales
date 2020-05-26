@@ -261,6 +261,60 @@
     \item Usando el perceptrón multicapa visto en clase, clasifica a $C_1$ y 
     $C_2$. ¿Qué parámetros ocupaste?
 
+    \textsc{Solución:} Primero, generamos un conjunto de datos. 
+    \begin{lstlisting}[language=Python]
+    from sklearn.datasets import make_moons
+    import matplotlib.pyplot as plt
+
+    C1, C2 = make_moons(random_state = 123, n_samples=200, noise=0.1)
+    plt.scatter(C1[:,0], C1[:,1], c = C2)
+    plt.show()
+    \end{lstlisting}
+
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.45\textwidth]{./imagenes/datos.png}
+    \end{figure}  
+    
+    Apoyándonos del \textbf{MLPClassifier} para clasificar el conjunto de 
+    datos, obtenemos 
+    \begin{lstlisting}[language=Python]
+    from sklearn.neural_network import MLPClassifier
+    from sklearn.model_selection  import train_test_split                       
+    import matplotlib.pyplot as plt
+
+    # Dividimos al conjunto de datos para poder manejarlo.
+    X_train, X_test, y_train, y_test = train_test_split(C1, C2)
+
+    # Aqui podemos observar los parametros que utilizamos.
+    modelo = MLPClassifier(activation = 'tanh', max_iter = 1000, 
+                           learning_rate_init = 0.001, hidden_layer_sizes = (10,4))
+
+    modelo.fit(X_train, y_train)
+
+
+    # Visualizamos la clasificacion con los datos de prueba. 
+    plt.scatter(X_test[:,0], X_test[:,1], c = modelo.predict(X_test))
+    plt.show()
+
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111)
+    # Visualizamos la clasificacion con los datos de prueba y entrenamiento.
+    ax1.scatter(X_test[:,0], X_test[:,1], c = modelo.predict(X_test))
+    ax1.scatter(X_train[:,0], X_train[:,1], c = modelo.predict(X_train))
+    plt.show()
+    \end{lstlisting}
+
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.45\textwidth]{./imagenes/clasificacion2-1.png}
+    \end{figure} 
+
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.45\textwidth]{./imagenes/clasificacion2-2.png}
+    \end{figure} 
+
     % Ejercicio 4.
     \item Con la red neuronal, vista en clase, que hace la clasificación 
     multiclase usando la función \textit{softmax}, realiza los siguiente 
@@ -388,6 +442,13 @@
                python-y-r-machine-learning-02-fa066b3add09}
     \item \url{http://www.eenube.com/index.php/ldp/machine-learning/121-
                programar-una-red-neuronal-para-clasificacion-binaria}
+    \item \url{https://www.interactivechaos.com/manual/tutorial-de-machine-
+               learning/perceptron-multicapa}
+    \item \url{https://analisisydecision.es/machine-learnig-analisis-grafico-
+               del-funcionamiento-de-algunos-algoritmos-de-clasificacion/}
+    \item \url{https://www.analyticslane.com/2020/04/20/entrenamiento-validacion-
+               y-test-con-scikit-learn/}
+    \item \url{https://blog.crespo.org.ve/2018/02/}
     \item \url{https://www.wikiwand.com/es/RNA_de_base_radial#/Referencias}
     \item \url{http://ele.aut.ac.ir/~abdollahi/Lec_3_NN11.pdf}
     \item \url{http://dianainteligenciaartificial.blogspot.com/2015/07/redes-de-
