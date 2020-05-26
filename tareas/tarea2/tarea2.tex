@@ -57,36 +57,184 @@
 
 \begin{enumerate}
     % Ejercicio 1.
-    \item Usando \textit{sklearn.datasets.make moons} genera un conjunto de 
+    \item Usando \textit{sklearn.datasets.make\_moons} genera un conjunto de 
     datos de la siguiente forma:
     \begin{verbatim}
         In [1]: C1, C2 = moons(random state=123, n samples=200, noise=0.1)
     \end{verbatim}
 
     \begin{lstlisting}[language=Python]
-        from sklearn.datasets import make_moons
-        import matplotlib.pyplot as plt
+    from sklearn.datasets import make_moons
+    import matplotlib.pyplot as plt
 
-        # Generamos un conjunto de datos.
-        C1, C2 = make_moons(random_state = 123, n_samples=200, noise=0.1)
-        plt.scatter(C1[:,0], C1[:,1], c=C2); plt.show()
+    C1, C2 = make_moons(random_state = 123, n_samples=200, noise=0.1)
+    plt.scatter(C1[:,0], C1[:,1], c = C2)
+    plt.show()
     \end{lstlisting}
 
-    \begin{figure}[h]
+    \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.5\textwidth]{./imagenes/datos.png}
+        \includegraphics[width=0.45\textwidth]{./imagenes/datos.png}
     \end{figure}            
 
     \begin{enumerate}
         % Ejercicio 1.a
         \item Implementa la regresión logística usando el descenso gradiente 
-        para clasificar $C_1$ y $C_2$. 
+        para clasificar $C_1$ y $C_2$.
+        
+        \textsc{Solución:}
+        \begin{lstlisting}[language=Python]
+        import numpy as np
+
+        '''
+        La funcion sigmoide es de la forma S(z) = 1/(1 + e^{-z}), donde 
+        z = x * w^{T} + b. 
+        '''
+        def sigmoide(z):
+            return 1 / (1 + np.exp(-z))
+
+        def de_coste(y, y_hat):
+            j = - (y.dot(np.log(y_hat)) + (1 - y).dot((np.log(1 - y_hat))))
+            return j
+
+        def descenso_gradiente(x, y, alpha, theta, num_iteraciones):
+            costos = []
+            for each_iter in range (num_iteraciones):
+                z = np.dot(x, theta[1:]) + theta[0]
+                y_hat = sigmoide(z)
+                error = y_hat - y
+                gradiente = x.T.dot(error)
+                theta[0] -= alpha * error.sum()
+                theta[1:] -= alpha * gradiente
+                costos.append((1 / num_iteraciones) * (de_coste(y, y_hat)))
+            return costos
+
+        def prediccion(data):
+            z = np.dot(data, theta[1:]) + theta[0]
+            return np.where(sigmoide(z)>= 0.5, 0, 1)
+        \end{lstlisting}
+
+        Asignando valores a $\theta$, $\alpha$ y al número de iteraciones, 
+        obtenemos
+        \begin{lstlisting}[language=Python]
+        k, l = C1.shape
+        theta = np.zeros(l+1)
+        costo = descenso_gradiente(C1, C2, 0.0001, theta, 10000)
+
+        print ('Interseccion:', theta[0])
+        print ('Coeficientes estimados:', theta[1:])
+
+        # Visualizamos la funcion de costo.
+        plt.title('Funcion de Costo J')
+        plt.xlabel('Numero de iteraciones')
+        plt.ylabel('Costo')
+        plt.plot(costo)
+        plt.show()
+        \end{lstlisting}
+
+        \begin{verbatim}
+        Intersección: 0.5894707477910425
+        Coeficientes estimados: [ 1.15656526 -4.85276922]
+        \end{verbatim}
+
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.6\textwidth]{./imagenes/costo.png}
+            \label{coste}
+        \end{figure}  
+
+        \newpage
+        Finalmente, la clasificación quedaría de la siguiente forma:
+        \begin{lstlisting}[language=Python]
+        plt.scatter(C1[:,0], C1[:,1], c = prediccion(C1))
+        plt.show()
+        \end{lstlisting}
+
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.55\textwidth]{./imagenes/clasificacion.png}
+        \end{figure} 
+
+        Utilizando \textbf{sklearn} para comprar los resultados obtenemos
+        \begin{lstlisting}[language=Python]
+        from sklearn.linear_model import LogisticRegression
+
+        regresion_logistica = LogisticRegression()
+        modelo = regresion_logistica.fit(C1, C2)
+
+        print ("Interseccion: ", modelo.intercept_)
+        print ("Coeficientes estimados: ", modelo.coef_)
+
+        # Visualizamos la clasificacion.
+        plt.scatter(C1[:,0], C1[:,1], c = regresion_logistica.predict(C1))
+        plt.show()
+        \end{lstlisting}
+
+        \begin{verbatim}
+        Intersección:  [0.36023346]
+        Coeficientes estimados:  [[ 1.09045248 -3.69780292]]
+        \end{verbatim}
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.55\textwidth]{./imagenes/revision.png}
+        \end{figure} 
 
         % Ejercicio 1.b
         \item ¿Qué transformación de los datos ocupaste para poder hacer la
         correcta clasificación?
+
+        \textsc{Solución:} Sabemos que la función \textit{sigmoide} 
+        \begin{equation*}
+            S(z) = \frac{1}{1 + e^{-z}} \; \; \; \; \; \; \; \; \; \; \; \; \;
+            z = w^{T} x + b
+        \end{equation*}
+        
+        nunca llega a tocar el eje de las $y$ a $0$ o $1$, y se mueve entre 
+        estos dos valores. 
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.4\textwidth]{./imagenes/sigmoide.png}
+        \end{figure} 
+        
+        Lo cual la hace perfecta para expresar una propabilidad para nuestra 
+        decisión binaria (clasificar).
+
+        Ahora bien, debemos encontrar los valores correctos de $w$ y $b$ que 
+        nos permitan encontrar el valor correcto de la función $S$. El vector 
+        de pesos $w$ se inicializa de manera arbitraria (aunque en nuestra 
+        implementación lo inicializamos como el vector cero). 
+
+        Para saber qué tan bien o qué tan mal logra clasificar nuestra función,
+        requerimos una función de error o de coste. Y teniéndo en cuenta que 
+        nuestro problema no es convexo, entonces sería de la forma 
+        \begin{equation*}
+            L(y', y) = - (y \log y' + (1 - y) \log (1 - y'))
+        \end{equation*}
+
+        Esta función únicamente se usará sobre una entrada del conjunto de 
+        datos. Ahora, para obtener una imagen general sobre el error de los 
+        parámetros con respecto al total de los datos, usaremos la función de 
+        costo, que es definida como:
+        \begin{align*}
+            J(w, b) 
+            &= \frac{1}{m} \sum_{i=1}^{m} L(y'^i, y^i) \\ 
+            &= - \frac{1}{m} \sum_{i=1}^{m} [y^i \log y'^i + 
+               (1 - y^i) \log (1 - y'^i)]
+        \end{align*}
+
+        El objetivo es minimizar el costo total del modelo, para así acercarnos
+        lo más posible a nuestras clases dadas $y$. Esta minimización la 
+        hacemos utilizando el \textit{descenso gradiente}. 
+
+        Por lo tanto, la función \textit{sigmoide} usa los datos de entrada y 
+        los valores del modelo $\theta$ para minimizar la función de coste con 
+        ayuda del algoritmo del desceso. Ésta es la transformación de los 
+        datos que se va realizando, y se puede ver en la gráfica de 
+        función de coste \ref{coste} . 
     \end{enumerate}
 
+    \newpage
     % Ejercicio 2.
     \item Calcula la derivada de la tangente hiperbólica $\tanh$.
     
@@ -236,6 +384,10 @@
 
 \textbf{Bibliografía}
 \begin{itemize}
+    \item \url{https://medium.com/@dtellogaete/regresi%C3%B3n-log%C3%ADstica-en-
+               python-y-r-machine-learning-02-fa066b3add09}
+    \item \url{http://www.eenube.com/index.php/ldp/machine-learning/121-
+               programar-una-red-neuronal-para-clasificacion-binaria}
     \item \url{https://www.wikiwand.com/es/RNA_de_base_radial#/Referencias}
     \item \url{http://ele.aut.ac.ir/~abdollahi/Lec_3_NN11.pdf}
     \item \url{http://dianainteligenciaartificial.blogspot.com/2015/07/redes-de-
