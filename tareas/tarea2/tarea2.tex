@@ -307,12 +307,12 @@
 
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.45\textwidth]{./imagenes/clasificacion2-1.png}
+        \includegraphics[width=0.4\textwidth]{./imagenes/clasificacion2-1.png}
     \end{figure} 
 
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=0.45\textwidth]{./imagenes/clasificacion2-2.png}
+        \includegraphics[width=0.4\textwidth]{./imagenes/clasificacion2-2.png}
     \end{figure} 
 
     % Ejercicio 4.
@@ -324,9 +324,247 @@
         \item Encuentra la mejor arquitectura para el conjunto de Iris. 
         Justifica tu respuesta de por qué es la mejor.
 
+        \textsc{Solución:} Dado un vector de entrada, queremos poder clasificarlo
+        en \textit{Setosa}, \textit{Versícolor} o \textit{Virginica}. 
+
+        Tomando el siguiente esquema como referencia
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.31\textwidth]{./imagenes/softmax.png}
+        \end{figure} 
+
+        podemos visualizar un poco mejor la arquitectura elegida:
+        \begin{itemize}
+            \item Capa de entrada.
+            Tendremos 4 neuronas, una por cada entrada de nuestro vector de 
+            inicio. Cada uno de estos vectores se ve de la forma:
+            \begin{equation*}
+                v = [l \; \; a \; \; l \; \; a]
+            \end{equation*}
+
+            donde $l$ es el largo del sépalo y $a$ es el ancho del sépalo.
+            
+            \item Capa oculta.
+            Tendremos ocho neuronas. Esta elección la hice basándome en una 
+            implementación que encontré (donde utilizan softmax) para clasificar 
+            la flor Iris. 
+            
+            Al principio probé con tres y cuatro neuronas en esta capa, pero no
+            lograba que la tasa de aprendizaje y el número de iteraciones 
+            lograran un buen resultado al momento de hacer las clasificaciones
+            con los vectores de entrada (las entradas en el vector que regresa
+            la función \textit{predict} eran muy parecidas entre sí, (casi 
+            siempre un $0.33...$) y definitivamente esto no es lo que nosotros
+            estamos buscando). Por lo que, esta arquitectura es la mejor para mí 
+            (ya que funciona). 
+
+            \item Capa de salida.
+            Tendremos tres neuronas, una por cada especie relacionada a la flor
+            Iris.
+        \end{itemize}
+        
         % Ejercicio 4.b
         \item Usa las funciones $\tan h$ y $\gamma$ en la capa intermedia. ¿Cuál
         funciona mejor?
+
+        \textsc{Solución:} Primero, generamos el conjunto de datos \textbf{Iris}.
+        \begin{lstlisting}[language=Python]
+        from sklearn.datasets import load_iris
+        import matplotlib.pyplot as plt 
+
+        # Cargamos el conjunto de datos. 
+        iris = load_iris()
+        # Creamos la matriz de caracteristicas.
+        X = iris.data
+        # Creamos el vector de caracteristicas.
+        y = iris.target
+
+        # Visualizamos los puntos de entrenamiento.
+        plt.scatter(X[:,0], X[:,1], c = y)
+        plt.xlabel('Largo del sepalo')
+        plt.ylabel('Ancho del sepalo')
+        plt.show()
+        \end{lstlisting}
+
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.5\textwidth]{./imagenes/iris.png}
+        \end{figure}
+
+        Los estímulos (vectores de entrada) son codificados para mostrar un $1$
+        en entrada correspondiente a su valor, por ejemplo
+        \begin{equation*}
+            2 = [0, 0, 1]
+        \end{equation*}
+
+        \newpage
+        \begin{lstlisting}[language=Python]
+        from sklearn.preprocessing import OneHotEncoder
+
+        y = iris.target.reshape(-1,1)
+        encoder = OneHotEncoder(sparse=False)
+        y = encoder.fit_transform(y)
+        \end{lstlisting}
+
+        Ahora, no sólo queremos un valor entre $0$ y $1$, sino que queremos un 
+        vector en el que la salida deseada marque un $1$ y los demás $0$ (o 
+        algo cercano, en ambos casos). Es decir, no podemos usar $n$ 
+        \textit{sigmoides} porque el valor de cada entrada está condicionada a
+        ser $1$ sólo si los demás dan $0$.
+
+        Esto se puede lograr con la función \textit{Softmax} que nos da la 
+        probabilidad $i$-ésima de cada entrada en el vector aleatorio $x$.
+        \begin{equation*}
+            p_i = \frac{e^{x_i}}{\sum_{j}^{N} e^{x_j}}
+        \end{equation*}
+
+        Pero ahora no podemos usar el $MSE$ (ni $MAE$) como nuestra función de 
+        error. Debemos usar algo que nos permita ponderar el error de haberle
+        \textit{atinado} a la entrada deseada con un $1$, y con un $0$ a las 
+        demás.
+
+        \textit{Cross-Entropy} es la función que generaliza a la función que 
+        usamos para el caso binario.
+        \begin{equation*}
+            CE = \sum_{i}^{N} y_i \log (x_i)
+        \end{equation*}
+
+        El paso siguiente es definir los parámetros, la arquitectura (definida 
+        en el inciso anterior) y las funciones que vamos a utilizar:
+        \begin{lstlisting}[language=Python]
+        import numpy as np
+
+        def sigmoide(z):
+            return 1 / (1 + np.exp(-z))
+
+        def sigmoide_prima(x):
+            return sigmoide(x) * (1 - sigmoide(x))
+
+        def tanh(x):
+            return ((np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x)))
+
+        def tanh_prima(x):
+            return (1 / (np.exp(x) + np.exp(-x))**2)
+
+        def softmax(A):
+            expA = np.exp(A)
+            return expA / expA.sum(axis = 1, keepdims = True)
+
+        N = X.shape[0]  # numero de instancias
+        n = X.shape[1]  # dimension de instancias
+        nh =  3         # numero de neuronas ocultas
+        m = 3           # dimension salida
+
+        wh = np.random.rand(n,nh)  # pesos escondidos
+        bh = np.random.randn(nh)   # nodo sesgo escondidos
+
+        wo = np.random.rand(nh,m)  # pesos salida
+        bo = np.random.randn(m)    # nodo salida
+        lr = 0.00001               # tasa
+        \end{lstlisting}
+
+        \newpage
+        Ahora, realizamos el entrenamiento usando la función $\tanh$
+        \begin{lstlisting}[language=Python]
+        from sklearn.model_selection import train_test_split
+
+        # Dividimos nuestro conjunto de datos para poder manejarlo.
+        Xt, Xs, yt, ys = train_test_split(X,y)
+
+        J = []
+        for epoca in range (5000):
+            # Retropropagacion
+            
+            # Feed forward
+            zh = np.dot(X_train, wh) + bh   # activacion escondidas
+            ah = tanh(zh)                   # disparo escondidas
+
+            zo = np.dot(ah, wo) + bo        # activacion salida 
+            ao = softmax(zo)                # disparo salida (neuronas salida)
+            
+            # Envio de error hacia atras
+            
+            # Capa salida - escondida  
+            error = ao - y_train
+
+            deltas_wo = np.dot(ah.T, error)
+            deltas_bo = error
+
+            # Capa escondida - entrada
+            temp_dah = np.dot(error , wo.T)
+            deriv_h = tanh_prima(zh)
+
+            deltas_wh = np.dot(X_train.T, deriv_h * temp_dah)
+            deltas_bh = temp_dah * deriv_h
+
+            # Actualizacion de pesos
+            wh -= lr * deltas_wh
+            bh -= lr * deltas_bh.sum(axis=0)
+
+            wo -= lr * deltas_wo
+            bo -= lr * deltas_bo.sum(axis=0)
+            
+            if epoca % 200 == 0:
+                logL = np.sum(-y_train * np.log(ao))
+                J.append(logL)
+        \end{lstlisting}
+
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.35\textwidth]{./imagenes/logL-tan.png}
+        \end{figure}
+
+        Realizamos el entrenamiento también con la funcion $\gamma$.
+        \begin{lstlisting}[language=Python]
+        from sklearn.model_selection import train_test_split
+
+        # Dividimos nuestro conjunto de datos para poder manejarlo.
+        X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+        J = []
+        for epoca in range (50000):
+            # Retropropagacion
+            
+            # Feed forward
+            zh = np.dot(X_train, wh) + bh   # activacion escondidas
+            ah = sigmoide(zh)               # disparo escondidas
+            zo = np.dot(ah, wo) + bo        # activacion salida 
+            ao = softmax(zo)                # disparo salida
+            
+            # Envio de error hacia atras
+            
+            # Capa salida - escondida  
+            error = ao - y_train
+
+            deltas_wo = np.dot(ah.T, error)
+            deltas_bo = error
+
+            # Capa escondida - entrada
+            temp_dah = np.dot(error , wo.T)
+            deriv_h = sigmoide_prima(zh)
+
+            deltas_wh = np.dot(X_train.T, deriv_h * temp_dah)
+            deltas_bh = temp_dah * deriv_h
+
+            # Actualizacion de pesos
+            wh -= lr * deltas_wh
+            bh -= lr * deltas_bh.sum(axis=0)
+
+            wo -= lr * deltas_wo
+            bo -= lr * deltas_bo.sum(axis=0)
+            
+            if epoca % 200 == 0:
+                logL = np.sum(-y_train * np.log(ao))
+                print('logL function value: ', logL)
+                J.append(logL)
+
+        plt.plot(J[2:])
+        \end{lstlisting}
+
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.5\textwidth]{./imagenes/logL-sig.png}
+        \end{figure}
 
         % Ejercicio 4.c
         \item Clasifica los siguientes estímulos y reporta a qué clase pertenece
@@ -337,9 +575,59 @@
             \item $12.50 \; 9.20 \; 40.32 \; 21.55$
         \end{itemize}
 
+        \textsc{Solución:} Utlizamos la función 
+        \begin{lstlisting}[language=Python]
+        def predict(wh, wo, fact1, fact2, x):
+            zh = np.dot(x.T, wh) + bh           # activacion escondidas
+            ah = fact1(zh)                      # disparo escondidas
+            
+            zo = np.dot(ah, wo) + bo            # activacion salida 
+            ao = fact2(zo)                      # disparo salida
+            return ao
+        \end{lstlisting}
+
+        para clasificar los estímulos solicitados:
+        \begin{itemize}
+            \item Con la función de activación $\tanh$.
+            \begin{lstlisting}[language=Python]
+                d
+            \end{lstlisting}
+
+            Por lo tanto, los dos primeros vectores corresponden a la especie 
+            \textit{setosa} y el último corresponde a la especie 
+            \textit{virginica}.
+
+            \item Con la función de activacion $\gamma$.
+            \begin{lstlisting}[language=Python]
+            v1 = np.array([[5.97],[4.20],[1.23],[0.25]])
+            v2 = np.array([[6.80],[5.00],[1.25],[1.20]])
+            v3 = np.array([[12.50],[9.20],[40.32],[21.55]])
+
+            p1 = predict(wh, wo, sigmoide, softmax, v1)
+            p2 = predict(wh, wo, sigmoide, softmax, v2)
+            p3 = predict(wh, wo, sigmoide, softmax, v3)
+
+            print(p1)
+            print(p2)
+            print(p3)
+            \end{lstlisting}
+
+            \begin{verbatim}
+                [[0.96800806 0.02926022 0.00273171]]
+                [[0.96823689 0.02905003 0.00271307]]
+                [[0.00214928 0.03275745 0.96509327]]
+            \end{verbatim}
+
+            Por lo tanto, los dos primeros vectores corresponden a la especie 
+            \textit{setosa} y el último corresponde a la especie 
+            \textit{virginica}.
+        \end{itemize}
+
         % Ejercicio 4.d
         \item ¿Te parecen correctas todas las clasificaciones? En caso de que 
         alguna no, ¿por qué? ¿cómo corregirías este error?
+
+        \textsc{Solución:} 
     \end{enumerate}
 
     % Ejercicio 5.
@@ -448,6 +736,12 @@
                del-funcionamiento-de-algunos-algoritmos-de-clasificacion/}
     \item \url{https://www.analyticslane.com/2020/04/20/entrenamiento-validacion-
                y-test-con-scikit-learn/}
+    \item \url{https://chrisalbon.com/machine_learning/basics/loading_scikit-
+               learns_iris_dataset/}
+    \item \url{https://scikit-learn.org/stable/modules/generated/sklearn.datasets.
+               load_iris.html}
+    \item \url{https://developers.google.com/machine-learning/crash-course/multi-
+               class-neural-networks/softmax?hl=es-419}
     \item \url{https://blog.crespo.org.ve/2018/02/}
     \item \url{https://www.wikiwand.com/es/RNA_de_base_radial#/Referencias}
     \item \url{http://ele.aut.ac.ir/~abdollahi/Lec_3_NN11.pdf}
