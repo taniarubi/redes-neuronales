@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1590636369 "/home/taniarubi/Documents/fciencias/redes-neuronales/tareas/tarea2/tarea2.tex" "/home/taniarubi/Documents/fciencias/redes-neuronales/tareas/tarea2/tarea2.pdf" "tarea2" 1590636370
-  "/home/taniarubi/Documents/fciencias/redes-neuronales/tareas/tarea2/tarea2.aux" 1590636370 777 df276164e7c22c4aa45f4c15a7a56534 ""
-  "/home/taniarubi/Documents/fciencias/redes-neuronales/tareas/tarea2/tarea2.tex" 1590636368 29495 63f8979c062b885f2334215694b00376 ""
+["pdflatex"] 1590643875 "/home/taniarubi/Documents/fciencias/redes-neuronales/tareas/tarea2/tarea2.tex" "/home/taniarubi/Documents/fciencias/redes-neuronales/tareas/tarea2/tarea2.pdf" "tarea2" 1590643876
+  "/home/taniarubi/Documents/fciencias/redes-neuronales/tareas/tarea2/tarea2.aux" 1590643876 777 df276164e7c22c4aa45f4c15a7a56534 ""
+  "/home/taniarubi/Documents/fciencias/redes-neuronales/tareas/tarea2/tarea2.tex" 1590643874 30989 b81f8d38694ad79de6af531bc918d7ab ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1572595918 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1572595918 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texmf-dist/fonts/tfm/jknappen/ec/ecbx1095.tfm" 1572595918 3584 21b378cca2e40816b0e6d74a4dc98f04 ""
@@ -138,13 +138,13 @@
   "imagenes/revision.png" 1590440745 26843 bfef37c4500e0af2bb06b79e914289b2 ""
   "imagenes/sigmoide.png" 1590456520 12066 3da1236b05b2329c15b6d363c2cc039c ""
   "imagenes/softmax.png" 1590519580 82842 02b95ed90b3d498323127f2ec06f1305 ""
-  "tarea2.aux" 1590636370 777 df276164e7c22c4aa45f4c15a7a56534 "pdflatex"
-  "tarea2.out" 1590636369 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "tarea2.tex" 1590636368 29495 63f8979c062b885f2334215694b00376 ""
+  "tarea2.aux" 1590643876 777 df276164e7c22c4aa45f4c15a7a56534 "pdflatex"
+  "tarea2.out" 1590643875 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "tarea2.tex" 1590643874 30989 b81f8d38694ad79de6af531bc918d7ab ""
   (generated)
-  "/home/taniarubi/Documents/fciencias/redes-neuronales/tareas/tarea2/tarea2.pdf"
-  "tarea2.aux"
-  "tarea2.pdf"
-  "tarea2.out"
   "tarea2.log"
+  "tarea2.aux"
+  "tarea2.out"
   "/home/taniarubi/Documents/fciencias/redes-neuronales/tareas/tarea2/tarea2.log"
+  "tarea2.pdf"
+  "/home/taniarubi/Documents/fciencias/redes-neuronales/tareas/tarea2/tarea2.pdf"

@@ -569,6 +569,8 @@
             \includegraphics[width=0.5\textwidth]{./imagenes/logL-sig.png}
         \end{figure}
 
+        Dadas las gráficas obtenidas anteriormente 
+
         % Ejercicio 4.c
         \item Clasifica los siguientes estímulos y reporta a qué clase pertenece
         cada uno:
@@ -646,7 +648,26 @@
         \item ¿Te parecen correctas todas las clasificaciones? En caso de que 
         alguna no, ¿por qué? ¿cómo corregirías este error?
 
-        \textsc{Solución:} 
+        \textsc{Solución:} Me parecen correctas las clasificaciones para los 
+        dos primeros vectores de entrada (ambos se clasifican como 
+        \textit{setosa}), pero no la clasificación del último vector (ya que por
+        los datos que tiene cada entrada, podemos notar que no se trata de una 
+        especie de la flor Iris). Este último vector se clasifica como una 
+        especie de la flor Iris por que nuestra red neuronal no tiene la 
+        cantidad suficiente de datos para poder entrenarse y poder discernir 
+        correctamente (con esta premisa, dudaríamos un poco sobre la veracidad
+        de la clasificación de los dos primeros vectores, pero la consideramos 
+        correcta ya que con ambas funciones de activación obtuvimos el mismo 
+        resultado).
+        
+        El error lo podríamos solucionar incrementando (mucho) el conjunto de 
+        datos para después entrenar la red neuronal con él y que así sea capaz 
+        de detectar el error. Otra opción sería entrenar la red neuronal usando 
+        una función de activación que se fije en la densidad de un punto (se 
+        utiliza la densidad de puntos como clases válidas) o puntos. Las
+        funciones de activación alternativas que buscamos son las llamadas 
+        \textit{Funciones de Base Radial} (podemos ver un poco de ellas en el 
+        siguiente inciso).
     \end{enumerate}
 
     % Ejercicio 5.
@@ -761,6 +782,7 @@
                load_iris.html}
     \item \url{https://developers.google.com/machine-learning/crash-course/multi-
                class-neural-networks/softmax?hl=es-419}
+    \item \url{https://es.wikipedia.org/wiki/Funci%C3%B3n_de_activaci%C3%B3n}
     \item \url{https://blog.crespo.org.ve/2018/02/}
     \item \url{https://www.wikiwand.com/es/RNA_de_base_radial#/Referencias}
     \item \url{http://ele.aut.ac.ir/~abdollahi/Lec_3_NN11.pdf}
