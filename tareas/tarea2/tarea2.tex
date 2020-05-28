@@ -569,7 +569,15 @@
             \includegraphics[width=0.5\textwidth]{./imagenes/logL-sig.png}
         \end{figure}
 
-        Dadas las gráficas obtenidas anteriormente 
+        Ahora bien, ¿cómo sabemos cuál de las dos funciones de activación es 
+        mejor? Esto depende de la arquitectura de la red neuronal, de la 
+        función de activación y de la tasa de aprendizaje que utilicemos. La 
+        arquitectura de la red fue mencionada en el inciso anterior, y sabemos 
+        que para las funciones de activación $\tanh$ y $\gamma$, sus tasas de 
+        activación son $0.0001$ y $0.00001$, respectivamente. Experimentando 
+        con ambos modelos obtenemos que la configuración que minimiza el error 
+        es aquella que posee la función de activación $\gamma$, es decir, el 
+        sigmoide. 
 
         % Ejercicio 4.c
         \item Clasifica los siguientes estímulos y reporta a qué clase pertenece
