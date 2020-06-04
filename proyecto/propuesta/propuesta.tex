@@ -1,0 +1,64 @@
+\documentclass[letterpaper,12pt]{article}
+
+% Soporte para los acentos.
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}    
+% Idioma español.
+\usepackage[spanish,mexico, es-tabla]{babel}
+% Soporte de símbolos adicionales (matemáticas)
+\usepackage{multirow}
+\usepackage{amsmath}		
+\usepackage{amssymb}		
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{latexsym}
+\usepackage{enumerate}
+\usepackage{ragged2e}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{hyperref}
+% Modificamos los márgenes del documento.
+\usepackage[lmargin=2cm,rmargin=2cm,top=2cm,bottom=2cm]{geometry}
+
+\title{Facultad de Ciencias, UNAM \\ Redes Neuronales \\ 
+       \textit{Proyecto final: Fake News Detection Dataset}}
+\author{Rosado Cabrera Diego \\
+        Rubí Rojas Tania Michelle}
+\date{24 de mayo de 2020}
+
+\begin{document}
+\maketitle
+
+\section{Introducción}
+
+La diseminación de noticias falsas, bulos o rumores con el objetivo de 
+manipular la opinión pública es un asunto que cada vez preocupa más en todo el 
+mundo. 
+
+Las \textit{fake news} nos llaman la atención por que están protagonizadas por 
+instituciones o personajes públicos que han hecho o dicho algo controvertido,
+o bien, relatan hechos sorprendentes. Suelen ser noticias polémicas, que provocan
+la indignación de la sociedad en general. 
+
+
+\section{Proyecto}
+Nuestro proyecto consistirá en construir un modelo para la detección de 
+\textit{fake news} usando el algoritmo de clasificación 
+\textit{Passive-Aggressive} (ya que puede clasificar conjuntos masivos de datos, 
+se puede implementar de forma rápida y se ha comprobado que es mejor que el 
+\textit{MLP}). 
+
+El conjunto de datos lo obtendremos de la siguiente página
+\begin{center}
+        \url{https://www.kaggle.com/c/fake-news/data}
+\end{center}
+
+Este es un archivo \textit{CSV} que contiene $7796$ filas con $5$ columnas. 
+Donde las columnas refieren el id de la noticia, el título, el autor, el texto 
+de la noticia y una etiqueta de \textit{True (0)} o \textit{False (1)}. 
+
+Aunque existe una controversia entre cual es la \textit{verdad}, nosotros nos 
+basaremos en el concepto de \textit{verdad} que fue utilizado para construir 
+este conjunto de datos. 
+
+\end{document}
