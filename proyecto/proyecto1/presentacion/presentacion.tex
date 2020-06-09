@@ -71,7 +71,7 @@
 \justifying
 \textbf{Dada una noticia, queremos saber si es real o falsa.}
 
-Para atacar este problema, utilizaremos dos \textit{métodos} de 
+Para atacar este problema, utilizaremos dos \textit{modelos} de 
 clasificación diferentes:
 \begin{enumerate}
     \item Perceptrón Multicapa.
@@ -228,23 +228,9 @@ print(f'Precision: {round(score_mlp * 100, 2)}%')
 		
 \begin{frame}{Algoritmo Pasivo-Agresivo}
 \justifying
-Un algoritmo Pasivo-Agresivo funciona genéricamente con esta 
-regla de actualización. \\ 
-
+El algoritmo de clasificación \textit{Pasivo-Agresivo} funciona con 
+la siguiente regla de actualización:
 \begin{center}
-    \begin{cases}
-        \overline{w_{t+1}} 
-        = argmin_{\bar{w}} \frac{1}{2} \| \overline{w} -
-        \overline{w_t}\|^2 + C \xi^2 \\ 
-        L(\bar{w}; x_t, y_t) \leq \xi 
-    \end{cases}
-\end{center}
-\end{frame}
-
-\begin{frame}{Algoritmo Pasivo-Agresivo}
-    Después de resolver ambas condiciones de actualización, obtenemos 
-    la regla de actualización de forma cerrada:
-    \begin{center}
     \begin{equation*}
         \overline{w_{t+1}} = \overline{w_t} +
         \frac{max(0, 1 - y_t (\overline{w^T} \cdot \overline{x_t}))}
