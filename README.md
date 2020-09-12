@@ -16,6 +16,7 @@ Ayudante Lab: Omar Alejandro Suarez Guerrero
 * `Python: Python 3.8.3`
 * `Jupyter Notebook: jupyter-notebook  6.0.3`
 * `Julia: julia version 1.4.2`
+* `pdfTex: Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Arch Linux)`
 
 #### Contenido 
 
